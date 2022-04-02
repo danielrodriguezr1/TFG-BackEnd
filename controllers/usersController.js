@@ -189,7 +189,7 @@ exports.forgotPassword = async (req, res, next) => {
         verificationLink = `http://localhost:5000/new-password/${token}`;
         user.resetToken = token;
 
-
+        var tokenReset = token;
         var stringCodi = token.toString().replace(/\W_/g, '').slice(-6);
 
         console.log(stringCodi);
@@ -237,7 +237,7 @@ exports.forgotPassword = async (req, res, next) => {
     } catch (error) {
         return res.json('aqui ha fallado');
     }
-    res.json({codi: stringCodi});
+    res.json({token: tokenReset, codi: stringCodi});
 };
 
 exports.createNewPassword = async (req, res, next) => {
