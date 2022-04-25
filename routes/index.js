@@ -32,6 +32,7 @@ module.exports = function() {
 
     //Forgot Password
     router.put('/forgot-password',usersController.forgotPassword);
+
     //Create a new password
     router.put('/new-password',usersController.createNewPassword);
 
