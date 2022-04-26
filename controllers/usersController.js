@@ -1,4 +1,5 @@
 const Users = require('../models/Users');
+const usersData = require('../data/usersData');
 const jwt = require("jsonwebtoken");
 const async = require('async');
 
@@ -8,9 +9,11 @@ var nodemailer = require('nodemailer');
 exports.add = async (req, res) => {
     const user = new Users(req.body);
     try {
-        await user.save();
+        await usersData.save(user);
+        //await user.save();
         res.json({message: 'Nuevo usuario agregado'});
     } catch (error) {
+        res.json({message: 'Error al procesar la petición'});
         console.log(error);
         res.send(error);
         next();
@@ -32,9 +35,30 @@ exports.list = async (req,res) => {
 
 //leer cliente por id
 exports.show = async (req, res, next) => {
-    try {
-        const user = await Users.findById(req.params.id);
 
+    
+    let loadedUser;
+
+    usersData.findById(req.params.id) 
+        .then(user => {
+            if(!user){
+                res.status(404).json({message: "No existe el usuario con esa id"});
+                const error = new Error("No existe el usuario con esa id");
+                error.statusCode = 404;
+                throw error;
+            }
+            else{
+                loadedUser = user;
+                console.log(loadedUser);
+                res.status(200).json({user:loadedUser});
+            }
+        })
+        .catch(err => {
+            if(!err.statusCode)err.statusCode=500;
+            next(err);
+        });    
+    /*try {
+        const user = await Users.findById(req.params.id);
         if (!user) {
             res.status(404).json({
                 message: 'El usuario no existe'
@@ -47,12 +71,13 @@ exports.show = async (req, res, next) => {
         res.status(400).json({
             message: 'Error al procesar la peticion'
         })
-    }
+    }*/
 }
 
 //actualizar usuario
 exports.update = async (req, res, next) => {
     try {
+        
         const user = await Users.findOneAndUpdate(
             {_id: req.params.id},
             req.body,
@@ -92,7 +117,7 @@ exports.logIn = (req, res, next) => {
 
     let loadedUser;
 
-    Users.findOne({email:req.body.email})
+    usersData.findOne({email:req.body.email})
         .then(user => {
             if(!user){
                 res.status(404).json({message: "El usuario con este correo no se ha encontrado"});
@@ -128,7 +153,7 @@ exports.logIn = (req, res, next) => {
 
 exports.signUp = (req, res, next) => {
 
-   Users.findOne({email: req.body.email})
+   usersData.findOne({email: req.body.email})
         .then(user => {
             if(user){
 
@@ -139,7 +164,7 @@ exports.signUp = (req, res, next) => {
                 throw error;
             }
             else{
-                Users.findOne({nickname: req.body.nickname})
+                usersData.findOne({nickname: req.body.nickname})
                 .then(user => {
                     if(user){
         
@@ -158,7 +183,7 @@ exports.signUp = (req, res, next) => {
                             password: req.body.password
                         });
         
-                        user.save()
+                        usersData.save(user)
                             .then(result =>{
                                 const token = jwt.sign({email: result.email, userId: result._id.toString()}, process.env.JWT_KEY);
                                 res.status(201).json({token: token, message: 'Usuario creado!', userId: result._id.toString()});
@@ -184,7 +209,7 @@ exports.forgotPassword = async (req, res, next) => {
     let emailStatus = 'OK';
     
     try {        
-        const user = await Users.findOne({email: req.body.email});
+        const user = await usersData.findOne({email: req.body.email});
         const token = jwt.sign({email: user.email, userId: user._id.toString()},process.env.jwtSecretReset, {expiresIn:'10m'});
         verificationLink = `http://localhost:5000/new-password/${token}`;
         user.resetToken = token;
@@ -220,22 +245,10 @@ exports.forgotPassword = async (req, res, next) => {
             console.log('Message sent: ' + info.response);
         });
 
-        /*await transporter.sendMail({
-            from: '"Forgot password 👻" <danielroru19@gmail.com>', // sender address
-            to: user.email, // list of receivers
-            subject: "Forgot password ✔", // Subject line
-            //text: "Hello world?", // plain text body
-            html: `
-            <b>Por favor, haga click en el siguiente link, o pegue esto en su buscador para completar el proceso:</b>
-            <a href="${verificationLink}">${verificationLink}</a>
-            `, // html body
-          });*/
-        
-
-        await user.save();
+        await usersData.save(user);
 
     } catch (error) {
-        return res.json('aqui ha fallado');
+        return res.json('Error al procesar la petición');
     }
     res.json({token: tokenReset, codi: stringCodi});
 };
@@ -248,10 +261,10 @@ exports.createNewPassword = async (req, res, next) => {
     
     try {
         jwtPayload = jwt.verify(resetToken, process.env.jwtSecretReset);
-        const user = await Users.findOne({resetToken: resetToken});
+        const user = await usersData.findOne({resetToken: resetToken});
 
         user.password = newPassword;
-        await user.save();
+        await usersData.save(user);
     
     } catch (error) {
         return res.status(401).json({message: 'Algo fue mal'});
