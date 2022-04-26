@@ -188,17 +188,20 @@ exports.signUp = (req, res, next) => {
                                 const token = jwt.sign({email: result.email, userId: result._id.toString()}, process.env.JWT_KEY);
                                 res.status(201).json({token: token, message: 'Usuario creado!', userId: result._id.toString()});
                             })
-                            .catch(err => {
-                                if(!err.statusCode){
-                                    err.statusCode = 500;
-                                }
-                                next(err);
-                            }); 
                         }
-                    })
+                    }).catch(err => {
+                        if(!err.statusCode){
+                            err.statusCode = 500;
+                        }
+                        next(err);
+                    }); 
             }
-        })
-
+        }).catch(err => {
+            if(!err.statusCode){
+                err.statusCode = 500;
+            }
+            next(err);
+        }); 
 };
 
 
@@ -208,58 +211,62 @@ exports.forgotPassword = async (req, res, next) => {
     let verificationLink;
     let emailStatus = 'OK';
     
-    try {        
-        const user = await usersData.findOne({email: req.body.email});
-        if (user) {
-            const token = jwt.sign({email: user.email, userId: user._id.toString()},process.env.jwtSecretReset, {expiresIn:'10m'});
-            verificationLink = `http://localhost:5000/new-password/${token}`;
-            user.resetToken = token;
+          
+         usersData.findOne({email: req.body.email}).then(user => {
+            if (user) {
+                const token = jwt.sign({email: user.email, userId: user._id.toString()},process.env.jwtSecretReset, {expiresIn:'10m'});
+                verificationLink = `http://localhost:5000/new-password/${token}`;
+                user.resetToken = token;
 
-            var tokenReset = token;
-            var stringCodi = token.toString().replace(/\W_/g, '').slice(-6);
+                var tokenReset = token;
+                var stringCodi = token.toString().replace(/\W_/g, '').slice(-6);
 
-            console.log(stringCodi);
-            //ENVIAR CORREO
+                console.log(stringCodi);
+                //ENVIAR CORREO
 
-            var transporter = nodemailer.createTransport({
-                pool: true,
-                host: "smtp.gmail.com",
-                port: 465,
-                secure: true, // use TLS
-                auth: {
-                user: "danielroru19@gmail.com",
-                pass: "passworddrr",
-                },
-            });
-            
-            var mailOptions = {
-                from: '"@noreply" <danielroru19@gmail.com>', // sender address
-                to: user.email, // list of receivers
-                subject: 'Restablecer contraseña.', // Subject line
-                html: `Por favor, copie el siguiente código en la aplicación para finalizar su restablecimiento de contraseña:<br><br><b>${stringCodi}</b>`,
-            };
+                var transporter = nodemailer.createTransport({
+                    pool: true,
+                    host: "smtp.gmail.com",
+                    port: 465,
+                    secure: true, // use TLS
+                    auth: {
+                    user: "danielroru19@gmail.com",
+                    pass: "passworddrr",
+                    },
+                });
+                
+                var mailOptions = {
+                    from: '"@noreply" <danielroru19@gmail.com>', // sender address
+                    to: user.email, // list of receivers
+                    subject: 'Restablecer contraseña.', // Subject line
+                    html: `Por favor, copie el siguiente código en la aplicación para finalizar su restablecimiento de contraseña:<br><br><b>${stringCodi}</b>`,
+                };
 
-            transporter.sendMail(mailOptions, function(error, info){
-                if(error){
-                    return console.log(error);
-                }
-                console.log('Message sent: ' + info.response);
-            });
+                transporter.sendMail(mailOptions, function(error, info){
+                    if(error){
+                        return console.log(error);
+                    }
+                    console.log('Message sent: ' + info.response);
+                });
 
-            await usersData.save(user);
+                usersData.save(user);
+                res.json({token: tokenReset, codi: stringCodi});
+            }
+            else {
+                res.status(404).json({message:'El correo no existe'});
+
+                const error = new Error("El correo no existe");
+                error.statusCode = 404;
+                throw error;            
+            }
+
+    }).catch(err => {
+        if(!err.statusCode){
+            err.statusCode = 500;
         }
-        else {
-            res.status(404).json({message:'El correo no existe'});
+        next(err);
+    }); 
 
-            const error = new Error("El correo no existe");
-            error.statusCode = 404;
-            throw error;            
-        }
-
-    } catch (error) {
-        return res.json('Error al procesar la petición');
-    }
-    res.json({token: tokenReset, codi: stringCodi});
 };
 
 exports.createNewPassword = async (req, res, next) => {

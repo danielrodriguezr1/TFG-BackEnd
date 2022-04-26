@@ -18,7 +18,7 @@ module.exports = {
 
     async findOne(field) {
         try {
-            const user = Users.findOne(field);
+            const user = await Users.findOne(field);
             return user;        
         } catch (error) {
             next();
@@ -28,7 +28,7 @@ module.exports = {
 
     async findById(id) {
         try {
-            const user = Users.findById(id);
+            const user = await Users.findById(id);
             return user;
         } catch (error) {
             next();
