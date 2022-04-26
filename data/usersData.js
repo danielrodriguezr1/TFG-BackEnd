@@ -17,8 +17,13 @@ module.exports = {
     },
 
     async findOne(field) {
-        const user = Users.findOne(field);
-        return user;
+        try {
+            const user = Users.findOne(field);
+            return user;        
+        } catch (error) {
+            next();
+        }
+
     },
 
     async findById(id) {
