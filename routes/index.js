@@ -1,8 +1,7 @@
 const express = require('express');
-
 const router = express.Router();
-
 const usersController = require('../controllers/usersController');
+const tmdbController = require('../controllers/tmdbController');
 const aws = require("aws-sdk");
 
 
@@ -13,21 +12,20 @@ const aws = require("aws-sdk");
 
 module.exports = function() {
 
-    //post: /users
+    //Añadir usuario
     router.post('/users', usersController.add);
-    //get: /users
+    //Leer todos los usuarios
     router.get('/users', usersController.list);
-    //leer usuario
-    //get: /users/:id
+    //Leer usuario por id
     router.get('/users/:id', usersController.show);
-    //put: /users/:id
+    //Actualizar usuario
     router.put('/users/:id', usersController.update);
-    //delete: /customers/:id
+    //Eliminar usuario
     router.delete('/users/:id', usersController.delete)
 
-    //login y sign up
-    //router.post('/signup', userController.signUp);
+    //Login
     router.post('/login', usersController.logIn);
+    //Signup
     router.post('/signup', usersController.signUp);
 
     //Forgot Password
@@ -35,6 +33,16 @@ module.exports = function() {
 
     //Create a new password
     router.put('/new-password',usersController.createNewPassword);
+    
+
+
+    router.get('/getNowPlayingMovies', tmdbController.getNowPlayingMovies);
+    router.get('/getTopRatedMovie', tmdbController.getTopRatedMovie);
+    router.get('/getPopularMovies', tmdbController.getPopularMovies);
+    router.get('/getPopularTV', tmdbController.getPopularTV);
+
+
+
 
 
     return router;
