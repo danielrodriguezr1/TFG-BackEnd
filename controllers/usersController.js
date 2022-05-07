@@ -76,21 +76,43 @@ exports.show = async (req, res, next) => {
 
 //actualizar usuario
 exports.update = async (req, res, next) => {
-    try {
-        
-        const user = await Users.findOneAndUpdate(
-            {_id: req.params.id},
-            req.body,
-            {new: true }
-        );
-        res.json({
-            message: 'Cliente actualizado correctamente'
+    let user_id = req.params.id;
+    console.log(req.file);
+    Users.findById(user_id)
+    .then(user => {
+        let update;
+
+        if(typeof req.file !== 'undefined'){
+                update = { 
+                    "name": req.body.new_name,
+                    "lastname": req.body.new_lastname,
+                    "profileImage": req.file.location
+                }
+            
+        }
+        else{
+            update = { 
+                "name": req.body.new_name,
+                "surnames": req.body.new_lastname,
+            }
+        }
+
+        Users.findByIdAndUpdate(user_id,update)
+        .then(user => {
+            if(!user) {
+                res.status(404).json({message: 'Este usuario no existe'});
+            }
+            else {
+                res.status(201).json({message: 'Informacion modificada!'});
+            }
         })
-    } catch (error) {
-        res.status(400).json({
-            message:'Error al procesar la peticion'
+        .catch(err => {
+            if(!err.statusCode){
+                    err.statusCode = 500;
+            }
+            next(err);
         });
-    }
+    })
 }
 
 //eliminar usuario

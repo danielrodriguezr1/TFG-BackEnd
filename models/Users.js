@@ -32,6 +32,31 @@ const usersSchema = new Schema({
         required: true,
     },
 
+    followers: {
+        type: Array,
+        default: []
+    },
+
+    followings: {
+        type: Array,
+        default: []
+    },
+
+    about: {
+        type: String,
+        optional: true
+    },
+
+    profileImage: {
+        type: String,
+        optional: true
+    },
+    
+    coverImage: {
+        type: String,
+        optional: true
+    },
+
     resetToken: {
         type: String,
         optional: true,

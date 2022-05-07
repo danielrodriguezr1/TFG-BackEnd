@@ -34,7 +34,6 @@ module.exports = function() {
 
     //Create a new password
     router.put('/new-password',usersController.createNewPassword);
-    
 
     //TMDB
     router.get('/getNowPlayingMovies', tmdbController.getNowPlayingMovies);
