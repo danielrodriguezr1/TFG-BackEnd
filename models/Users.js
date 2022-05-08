@@ -44,6 +44,7 @@ const usersSchema = new Schema({
 
     about: {
         type: String,
+        default : "iNuevo por aquí!",
         optional: true
     },
 

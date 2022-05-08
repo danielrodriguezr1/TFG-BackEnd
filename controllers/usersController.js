@@ -75,7 +75,7 @@ exports.show = async (req, res, next) => {
 }
 
 //actualizar usuario
-exports.update = async (req, res, next) => {
+exports.patch = async (req, res, next) => {
     let user_id = req.params.id;
     console.log(req.file);
     Users.findById(user_id)
@@ -86,6 +86,9 @@ exports.update = async (req, res, next) => {
                 update = { 
                     "name": req.body.new_name,
                     "lastname": req.body.new_lastname,
+                    "nickname": req.body.new_nickname,
+                    "email": req.body.new_email,
+                    "about": req.body.new_about,
                     "profileImage": req.file.location
                 }
             
@@ -93,7 +96,10 @@ exports.update = async (req, res, next) => {
         else{
             update = { 
                 "name": req.body.new_name,
-                "surnames": req.body.new_lastname,
+                "lastname": req.body.new_lastname,
+                "nickname": req.body.new_nickname,
+                "email": req.body.new_email,
+                "about": req.body.new_about,
             }
         }
 

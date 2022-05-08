@@ -20,7 +20,7 @@ module.exports = function() {
     //Leer usuario por id
     router.get('/users/:id', usersController.show);
     //Actualizar usuario
-    router.put('/users/:id', usersController.update);
+    router.patch('/users/:id', usersController.patch);
     //Eliminar usuario
     router.delete('/users/:id', usersController.delete)
 
