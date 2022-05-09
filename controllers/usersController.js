@@ -57,21 +57,6 @@ exports.show = async (req, res, next) => {
             if(!err.statusCode)err.statusCode=500;
             next(err);
         });    
-    /*try {
-        const user = await Users.findById(req.params.id);
-        if (!user) {
-            res.status(404).json({
-                message: 'El usuario no existe'
-            });
-        }
-
-        res.json(user);
-
-    } catch (error) {
-        res.status(400).json({
-            message: 'Error al procesar la peticion'
-        })
-    }*/
 }
 
 //actualizar usuario
@@ -89,7 +74,8 @@ exports.patch = async (req, res, next) => {
                     "nickname": req.body.new_nickname,
                     "email": req.body.new_email,
                     "about": req.body.new_about,
-                    "profileImage": req.file.location
+                    "profileImage": req.file.location,
+                    
                 }
             
         }
@@ -130,7 +116,7 @@ exports.delete = async (req, res, next) => {
                 messaje: 'El usuario no existe'
             })
         }
-        res.json({message: 'El usuario ha sido eliminado'});
+        res.status(200).json({message: 'El usuario ha sido eliminado'});
     } catch (error) {
         res.status(400).json({
             message: 'Error al procesar la peticion'
@@ -177,8 +163,61 @@ exports.logIn = (req, res, next) => {
 }
 
 
-//sign up
+//check email
+exports.checkEmail = (req,res,next) => {
 
+    Users.findOne({email: req.params.email})
+    .then(user => {
+            if(user){
+
+                res.status(409).json({message:'El correo ya está en uso'});
+
+                const error = new Error("El correo ya está en uso");
+                error.statusCode = 409;
+                throw error;
+            }
+            else{
+                res.status(200).json({message: 'El correo aún no está en uso'});
+            }
+        }
+    )
+    .catch(err => {
+        if(!err.statusCode){
+            err.statusCode = 500;
+        }
+        next(err);
+    }); 
+}
+
+
+//checkUser
+exports.checkNickname = (req,res,next) => {
+
+    Users.findOne({nickname: req.params.nickname})
+    .then(user => {
+            if(user){
+
+                res.status(409).json({message:'El nombre de usuario ya está en uso'});
+
+                const error = new Error("El nombre de usuario ya está en uso");
+                error.statusCode = 409;
+                throw error;
+            }
+            else{
+                res.status(200).json({message: 'El nombre de usuario aún no está en uso'});
+            }
+        }
+    )
+    .catch(err => {
+        if(!err.statusCode){
+            err.statusCode = 500;
+        }
+        next(err);
+    }); 
+}
+
+
+//sign up
 exports.signUp = (req, res, next) => {
 
    usersData.findOne({email: req.body.email})

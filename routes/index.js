@@ -37,10 +37,15 @@ module.exports = function() {
     router.get('/users', usersController.list);
     //Leer usuario por id
     router.get('/users/:id',usersController.show);
-    //Actualizar usuario
-    router.patch('/users/:id', uploadS3 ,usersController.patch);
     //Eliminar usuario
-    router.delete('/users/:id', usersController.delete)
+    router.delete('/users/:id', usersController.delete);
+
+
+    //checkEmail
+    router.get('/checkEmail/:email',usersController.checkEmail);
+
+    //checkUser
+    router.get('/checkNickname/:nickname',usersController.checkNickname);
 
     //Login
     router.post('/login', usersController.logIn);
@@ -52,6 +57,9 @@ module.exports = function() {
 
     //Create a new password
     router.put('/new-password',usersController.createNewPassword);
+
+    //Update user
+    router.patch('/users/:id', uploadS3 ,usersController.patch);
 
     //TMDB
     router.get('/getNowPlayingMovies', tmdbController.getNowPlayingMovies);
@@ -74,7 +82,6 @@ module.exports = function() {
     router.get('/getPersons/:query/:page', tmdbController.getPersons);
 
 
-    
     //IMDB
     router.get('/getRatings/:id/',imdbController.getRatings);
 
