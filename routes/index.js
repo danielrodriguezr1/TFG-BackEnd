@@ -5,11 +5,29 @@ const tmdbController = require('../controllers/tmdbController');
 const imdbController = require('../controllers/imdbController');
 const aws = require("aws-sdk");
 
+const shortid = require("shortid");
+const multer = require("multer");
+const multerS3 = require("multer-s3");
 
-/*const s3 = new aws.S3({
+const s3 = new aws.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_KEY
-  })*/
+    secretAccessKey: process.env.AWS_SECRET_KEY,
+    region : process.env.AWS_BUCKET_REGION
+  })
+
+  const uploadS3 = multer({
+    storage: multerS3({
+      s3: s3,
+      bucket: "profile-picture-danielrodriguezr1",
+      //acl: "public-read",
+      metadata: function(req, file, cb){
+        cb(null, {fieldName: 'profileImage'});
+      },
+      key: function (req, file, cb) {
+        cb(null, shortid.generate() + "-" + shortid.generate() + '.png');
+      },
+    })
+  }).single('profileImage');
 
 module.exports = function() {
 
@@ -18,9 +36,9 @@ module.exports = function() {
     //Leer todos los usuarios
     router.get('/users', usersController.list);
     //Leer usuario por id
-    router.get('/users/:id', usersController.show);
+    router.get('/users/:id',usersController.show);
     //Actualizar usuario
-    router.patch('/users/:id', usersController.patch);
+    router.patch('/users/:id', uploadS3 ,usersController.patch);
     //Eliminar usuario
     router.delete('/users/:id', usersController.delete)
 
