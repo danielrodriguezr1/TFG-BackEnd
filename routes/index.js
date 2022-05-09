@@ -41,6 +41,7 @@ module.exports = function() {
     router.delete('/users/:id', usersController.delete);
 
 
+
     //checkEmail
     router.get('/checkEmail/:email',usersController.checkEmail);
 
