@@ -3,6 +3,7 @@ const router = express.Router();
 const usersController = require('../controllers/usersController');
 const tmdbController = require('../controllers/tmdbController');
 const imdbController = require('../controllers/imdbController');
+const ratingsController = require('../controllers/ratingsController');
 const aws = require("aws-sdk");
 
 const shortid = require("shortid");
@@ -85,6 +86,13 @@ module.exports = function() {
 
     //IMDB
     router.get('/getRatings/:id/',imdbController.getRatings);
+
+
+
+    //RATINGS
+    router.get('/getRatingsUsers/', ratingsController.getRatings);
+    router.get('/getRatingsByUser/:id', ratingsController.getRatingsByUser);
+    router.post('/addRating/:id/', ratingsController.addRating)
 
     return router;
 };
