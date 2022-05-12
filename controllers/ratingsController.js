@@ -31,4 +31,16 @@ exports.getRatingsByUser = async (req, res, next) => {
             message: 'Error al procesar la peticion'
         });
     }
-}
+};
+
+exports.getRatingByUser = async (req, res, next) => {
+    try {
+        const ratings = await Rating.find({user: req.params.id, filmOrShow:req.body.idFilmOrShow});
+        res.status(200).send(ratings);
+        
+    }catch(error) {
+        res.status(400).json({
+            message: 'Error al procesar la peticion'
+        });
+    }
+};
