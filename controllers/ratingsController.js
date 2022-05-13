@@ -35,7 +35,7 @@ exports.getRatingsByUser = async (req, res, next) => {
 
 exports.getRatingByUser = async (req, res, next) => {
     try {
-        const ratings = await Rating.find({user: req.params.id, filmOrShow:req.body.idFilmOrShow});
+        const ratings = await Rating.find({user: req.params.id, filmOrShow:req.params.idFilmOrShow});
         res.status(200).send(ratings);
         
     }catch(error) {
