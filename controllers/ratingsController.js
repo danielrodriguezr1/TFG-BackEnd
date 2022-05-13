@@ -1,7 +1,9 @@
 const Rating = require('../models/Ratings');
 const async = require('async');
+const { findOneAndUpdate } = require('../models/Ratings');
+;
 
-exports.addRating = async  (req, res, next) => {
+exports.addRating =  async (req, res, next) => {
     try {
         const idUser = req.params.id;
         let data = {
@@ -9,8 +11,14 @@ exports.addRating = async  (req, res, next) => {
             user : idUser,
             filmOrShow : req.body.idFilmOrShow,
         }
-        const rating = await Rating.create(data)
-        res.status(200).send(rating)
+
+        const query = { filmOrShow: req.body.idFilmOrShow, user: req.params.id};
+        const update = { $set: { rating: req.body.rating}};
+        const options = { upsert: true };
+
+        const ratings = await Rating.updateOne(query, update, options);
+        res.status(200).send(ratings);
+
     } catch (error) {
         console.log(error)
     }
