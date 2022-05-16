@@ -95,5 +95,8 @@ module.exports = function() {
     router.get('/getRatingByUser/:id/:idFilmOrShow', ratingsController.getRatingByUser)
     router.post('/addRating/:id/', ratingsController.addRating)
 
+
+    router.get('/getRecommendations/:id/:type/', ratingsController.getRecommendations)
+
     return router;
 };

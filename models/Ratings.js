@@ -17,6 +17,11 @@ const ratingSchema = new Schema ({
     filmOrShow : {
         type: Number,
         required: true
+    },
+
+    type : {
+        type: Number, //0 --> PELICULA     1 --> SERIE
+        required: true
     }
 })
 
