@@ -81,7 +81,8 @@ exports.getRecommendations =  async (req, res, next) => {
                 .then(res => res.json())
                 .then((json) => {
                     var ids = json.results.map(async function(x) {
-                        recommendationListAux.push(x.id);
+                        //recommendationListAux.push(x.id);
+                        recommendationListAux.push(x);
                     });
                     
                 });  
@@ -106,19 +107,24 @@ exports.getRecommendations =  async (req, res, next) => {
         for (var i = 0; i < recommendationList.length; i++) {
             var igual=false;
              for (var j = 0; j < ratings.length & !igual; j++) {
-                 if(recommendationList[i] == ratings[j]['filmOrShow'] && 
-                 recommendationList[i] == ratings[j]['filmOrShow']) 
+                 if((recommendationList[i]['id'] == ratings[j]['filmOrShow'] && 
+                 recommendationList[i]['id'] == ratings[j]['filmOrShow'])) 
                          igual=true;
              }
             if(!igual)recommendationListFinal.push(recommendationList[i]);
         }
 
         //ELIMINAR LAS RECOMENDACIONES REPETIDAS
-        recommendationListFinalNoDuplicate = recommendationListFinal.filter(function(elem, pos) {
+        /*recommendationListFinalNoDuplicate = recommendationListFinal.filter(function(elem, pos) {
             return recommendationListFinal.indexOf(elem) == pos;
-        })
+        })*/
+
+        //ELIMINAR LAS RECOMENDACIONES REPETIDAS
+        const result = [...new Set(recommendationListFinal.map(obj => JSON.stringify(obj)))]
+                 .map(str => JSON.parse(str));
+          
        
-        res.status(200).send(recommendationListFinalNoDuplicate)
+        res.status(200).send(result)
 
     }catch(error) {
         res.status(400).json({
