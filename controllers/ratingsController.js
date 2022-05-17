@@ -94,7 +94,8 @@ exports.getRecommendations =  async (req, res, next) => {
                 .then(res => res.json())
                 .then((json) => {
                     var ids = json.results.map(function(x) {
-                        recommendationListAux.push(x.id);
+                        //recommendationListAux.push(x.id);
+                        recommendationListAux.push(x);
                     });
                 });    
                 recommendationListAux.splice(3);            
