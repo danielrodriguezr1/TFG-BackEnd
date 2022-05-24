@@ -394,6 +394,29 @@ exports.addFilmToWatchlist = async (req, res, next) => {
     }   
 },
 
+exports.deleteFilmWatchlist = async (req, res, next) => {
+    try {
+        var obj = { idFilm: req.params.idFilm };
+        Users.findOneAndUpdate(
+            {_id:req.params.id},
+            {$pull: { watchListFilm: obj} },
+            function (error, success) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log(success);
+                }
+            });
+            res.status(200).json({
+                message: 'OK'
+            })
+    }catch(error) {
+        res.status(400).json({
+            message: 'Error al procesar la peticion'
+        });
+    } 
+},
+
 exports.getWatchlistShowByUser = async (req, res, next) => {
     try {
         Users.findById(req.params.id).then(user => {
@@ -428,6 +451,29 @@ exports.addShowToWatchlist = async (req, res, next) => {
             message: 'Error al procesar la peticion'
         });
     }   
+},
+
+exports.deleteShowWatchlist = async (req, res, next) => {
+    try {
+        var obj = { idShow: req.params.idShow };
+        Users.findOneAndUpdate(
+            {_id:req.params.id},
+            {$pull: { watchListShow: obj} },
+            function (error, success) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log(success);
+                }
+            });
+            res.status(200).json({
+                message: 'OK'
+            })
+    }catch(error) {
+        res.status(400).json({
+            message: 'Error al procesar la peticion'
+        });
+    } 
 },
 
 exports.existsInWatchlist = async (req, res, next) => {

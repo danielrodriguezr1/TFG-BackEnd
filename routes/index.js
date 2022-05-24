@@ -102,8 +102,12 @@ module.exports = function() {
     //WATHCLIST
     router.get('/getWatchlistFilm/:id/', usersController.getWatchlistFilmByUser);
     router.post('/addFilmToWatchlist/:id/', usersController.addFilmToWatchlist);
+    router.patch('/deleteFilmWatchlist/:id/:idFilm/', usersController.deleteFilmWatchlist)
+
     router.get('/getWatchlistShow/:id/', usersController.getWatchlistShowByUser);
     router.post('/addShowToWatchlist/:id/', usersController.addShowToWatchlist);
+    router.patch('/deleteShowWatchlist/:id/:idShow/', usersController.deleteShowWatchlist);
+
     router.get('/existsInWatchlist/:id/:idFilmOrShow', usersController.existsInWatchlist)
 
     return router;
