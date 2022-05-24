@@ -92,11 +92,19 @@ module.exports = function() {
     //RATINGS
     router.get('/getRatingsUsers/', ratingsController.getRatings);
     router.get('/getRatingsByUser/:id', ratingsController.getRatingsByUser);
-    router.get('/getRatingByUser/:id/:idFilmOrShow', ratingsController.getRatingByUser)
-    router.post('/addRating/:id/', ratingsController.addRating)
+    router.get('/getRatingByUser/:id/:idFilmOrShow', ratingsController.getRatingByUser);
+    router.post('/addRating/:id/', ratingsController.addRating);
 
 
-    router.get('/getRecommendations/:id/:type/', ratingsController.getRecommendations)
+    router.get('/getRecommendations/:id/:type/', ratingsController.getRecommendations);
+
+
+    //WATHCLIST
+    router.get('/getWatchlistFilm/:id/', usersController.getWatchlistFilmByUser);
+    router.post('/addFilmToWatchlist/:id/', usersController.addFilmToWatchlist);
+    router.get('/getWatchlistShow/:id/', usersController.getWatchlistShowByUser);
+    router.post('/addShowToWatchlist/:id/', usersController.addShowToWatchlist);
+    router.get('/existsInWatchlist/:id/:idFilmOrShow', usersController.existsInWatchlist)
 
     return router;
 };

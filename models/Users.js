@@ -57,7 +57,15 @@ const usersSchema = new Schema({
     resetToken: {
         type: String,
         optional: true,
-    }
+    },
+
+    watchListFilm :[{
+        idFilm: Number,
+    }],
+
+    watchListShow :[{
+        idShow: Number,
+    }]
 })
 
 usersSchema.method('validPassword', async function(unhashed) {

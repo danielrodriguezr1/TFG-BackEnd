@@ -355,4 +355,99 @@ exports.createNewPassword = async (req, res, next) => {
 
     res.json({message: 'Contraseña cambiada'}) 
 
+},
+
+
+exports.getWatchlistFilmByUser = async (req, res, next) => {
+    try {
+        Users.findById(req.params.id).then(user => {
+            res.status(200).json({watchListFilm: user.watchListFilm});
+        })
+        
+    }catch(error) {
+        res.status(400).json({
+            message: 'Error al procesar la peticion'
+        });
+    }
+},
+
+exports.addFilmToWatchlist = async (req, res, next) => {
+    try {
+        var obj = { idFilm: req.body.idFilm };
+        Users.findOneAndUpdate(
+            {_id:req.params.id},
+            {$push: { watchListFilm: obj} },
+            function (error, success) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log(success);
+                }
+            });
+            res.status(200).json({
+                message: 'OK'
+            })
+    }catch(error) {
+        res.status(400).json({
+            message: 'Error al procesar la peticion'
+        });
+    }   
+},
+
+exports.getWatchlistShowByUser = async (req, res, next) => {
+    try {
+        Users.findById(req.params.id).then(user => {
+            res.status(200).json({watchListShow: user.watchListShow});
+        })
+        
+    }catch(error) {
+        res.status(400).json({
+            message: 'Error al procesar la peticion'
+        });
+    }
+},
+
+exports.addShowToWatchlist = async (req, res, next) => {
+    try {
+        var obj = { idShow: req.body.idShow };
+        Users.findOneAndUpdate(
+            {_id:req.params.id},
+            {$push: { watchListShow: obj} },
+            function (error, success) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    //console.log(success);
+                }
+            });
+            res.status(200).json({
+                message: 'OK'
+            })
+    }catch(error) {
+        res.status(400).json({
+            message: 'Error al procesar la peticion'
+        });
+    }   
+},
+
+exports.existsInWatchlist = async (req, res, next) => {
+
+    try {
+        await Users.findById(req.params.id).then(user => {
+            user.watchListFilm.map(function(item) {
+                if (item.idFilm == req.params.idFilmOrShow) {
+                    return res.status(200).json({message: "Esta película o serie se encuentra en la watchlist del usuario"})
+                }
+            }),
+            user.watchListShow.map(function(item) {
+                if (item.idShow == req.params.idFilmOrShow) {
+                    return res.status(200).json({message: "Esta película o serie se encuentra en la watchlist del usuario"})
+                }
+            })
+            return res.status(404).json({message: "Esta película o serie NO se encuentra en la watchlist del usuario"})
+            
+        })
+    } catch (error) {
+        
+    }
 }
