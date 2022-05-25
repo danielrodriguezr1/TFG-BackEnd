@@ -38,6 +38,8 @@ module.exports = function() {
     router.get('/users', usersController.list);
     //Leer usuario por id
     router.get('/users/:id',usersController.show);
+    //Leer usuario por nickname
+    router.get('/userByNickname/:nickname',usersController.getUserByNickname);
     //Eliminar usuario
     router.delete('/users/:id', usersController.delete);
 

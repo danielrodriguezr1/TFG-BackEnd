@@ -33,10 +33,32 @@ exports.list = async (req,res) => {
 };
 
 
-//leer cliente por id
+//leer usuario por nickname
+exports.getUserByNickname = async (req, res, next) => {
+    let loadedUser;
+    usersData.findOne({nickname:req.params.nickname}) 
+        .then(user => {
+            if(!user){
+                res.status(404).json({message: "No existe el usuario con ese nickname"});
+                const error = new Error("No existe el usuario con ese nickname");
+                error.statusCode = 404;
+                throw error;
+            }
+            else{
+                loadedUser = user;
+                console.log(loadedUser);
+                res.status(200).json({user:loadedUser});
+            }
+        })
+        .catch(err => {
+            if(!err.statusCode)err.statusCode=500;
+            next(err);
+        });    
+}
+
+//leer usuario por id
 exports.show = async (req, res, next) => {
 
-    
     let loadedUser;
 
     usersData.findById(req.params.id) 
