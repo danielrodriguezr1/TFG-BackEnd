@@ -293,7 +293,7 @@ exports.signUp = (req, res, next) => {
         }); 
 };
 
-
+//enviar codigo contraseña
 exports.forgotPassword = async (req, res, next) => {
 
     const message = 'Compruebe su correo para restablecer la contraseña.';
@@ -358,6 +358,7 @@ exports.forgotPassword = async (req, res, next) => {
 
 };
 
+//restablecer contraseña
 exports.createNewPassword = async (req, res, next) => {
     const {newPassword} = req.body;
     const resetToken = req.headers.reset;
@@ -379,7 +380,7 @@ exports.createNewPassword = async (req, res, next) => {
 
 },
 
-
+//devolver watchlist de un usuario
 exports.getWatchlistFilmByUser = async (req, res, next) => {
     try {
         Users.findById(req.params.id).then(user => {
@@ -393,6 +394,7 @@ exports.getWatchlistFilmByUser = async (req, res, next) => {
     }
 },
 
+//añadir pelicula a la watchlist de un usuario
 exports.addFilmToWatchlist = async (req, res, next) => {
     try {
         var obj = { idFilm: req.body.idFilm };
@@ -416,6 +418,7 @@ exports.addFilmToWatchlist = async (req, res, next) => {
     }   
 },
 
+//borrar pelicula de la watchlist de un usuario
 exports.deleteFilmWatchlist = async (req, res, next) => {
     try {
         var obj = { idFilm: req.params.idFilm };
@@ -439,6 +442,7 @@ exports.deleteFilmWatchlist = async (req, res, next) => {
     } 
 },
 
+//devolver watchlist de series de un usuario
 exports.getWatchlistShowByUser = async (req, res, next) => {
     try {
         Users.findById(req.params.id).then(user => {
@@ -452,6 +456,7 @@ exports.getWatchlistShowByUser = async (req, res, next) => {
     }
 },
 
+//añadir serie a la watchlist de un usuario
 exports.addShowToWatchlist = async (req, res, next) => {
     try {
         var obj = { idShow: req.body.idShow };
@@ -475,6 +480,7 @@ exports.addShowToWatchlist = async (req, res, next) => {
     }   
 },
 
+//eliminar serie de la watchlist de un usuario
 exports.deleteShowWatchlist = async (req, res, next) => {
     try {
         var obj = { idShow: req.params.idShow };
@@ -498,6 +504,7 @@ exports.deleteShowWatchlist = async (req, res, next) => {
     } 
 },
 
+//comprobar si una pelicula o serie existe en la watchlist de un usuario
 exports.existsInWatchlist = async (req, res, next) => {
 
     try {
@@ -517,5 +524,53 @@ exports.existsInWatchlist = async (req, res, next) => {
         })
     } catch (error) {
         
+    }
+},
+
+//seguir a un usuario
+exports.followUser = async (req, res, next) => {
+    if (req.body.userId !== req.params.id) {
+        try {
+            const user = await Users.findById(req.params.id);
+            const currentUser = await Users.findById(req.body.userId);
+            if (!user.followers.includes(req.body.userId)) {
+                await user.updateOne({$push:{followers:req.body.userId}});
+                await currentUser.updateOne({$push:{followings:req.body.userId}});
+                res.status(200).json({message: "Se ha seguido al usuario"});
+            } else {
+                res.status(403).json({message: "Ya sigues a este usuario"});
+            }
+        } catch (error) {
+            res.status(400).json({
+                message: 'Error al procesar la peticion'
+            });
+        }
+    }
+    else {
+        res.status(403).json({message: "No puedes seguirte a ti mismo"})
+    }
+}
+
+//dejar de seguir a un usuario
+exports.unfollowUser = async (req, res, next) => {
+    if (req.body.userId !== req.params.id) {
+        try {
+            const user = await Users.findById(req.params.id);
+            const currentUser = await Users.findById(req.body.userId);
+            if (user.followers.includes(req.body.userId)) {
+                await user.updateOne({$pull:{followers:req.body.userId}});
+                await currentUser.updateOne({$pull:{followings:req.body.userId}});
+                res.status(200).json({message: "Se ha dejado de seguir al usuario"});
+            } else {
+                res.status(403).json({message: "Tu no sigues a este usuario"});
+            }
+        } catch (error) {
+            res.status(400).json({
+                message: 'Error al procesar la peticion'
+            });
+        }
+    }
+    else {
+        res.status(403).json({message: "No puedes dejar de seguirte a ti mismo"})
     }
 }
