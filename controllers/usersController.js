@@ -587,7 +587,7 @@ exports.checkIfFollowUser = async (req, res, next) => {
                 res.status(200).json({message: "El usuario actual sigue al usuario indicado"});
             }
             else {
-                res.status(404).json({message: "El usuario actual NO sigue al usuario indicado"});
+                res.status(204).json({message: "El usuario actual NO sigue al usuario indicado"});
             }
         } catch (error) {
             res.status(400).json({
