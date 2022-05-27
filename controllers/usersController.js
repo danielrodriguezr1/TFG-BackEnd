@@ -577,11 +577,13 @@ exports.unfollowUser = async (req, res, next) => {
 
 //comprobar si un usuario sigue a otro
 exports.checkIfFollowUser = async (req, res, next) => {
-    if (req.body.userId !== req.params.id) {
+    if (req.params.idU !== req.params.id) {
+        console.log(req.params.id)
+        console.log(req.params.idU)
         try {
             const user = await Users.findById(req.params.id);
-            const currentUser = await Users.findById(req.body.userId);
-            if (user.followers.includes(req.body.userId)) {
+            //const currentUser = await Users.findById(req.params.id1);
+            if (user.followers.includes(req.params.idU)) {
                 res.status(200).json({message: "El usuario actual sigue al usuario indicado"});
             }
             else {

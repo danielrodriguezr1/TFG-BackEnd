@@ -70,7 +70,7 @@ module.exports = function() {
     //Unfollow an user
     router.put('/:id/unfollow', usersController.unfollowUser);
     //Check if user follows user
-    router.get('/:id/checkIfFollow',usersController.checkIfFollowUser);
+    router.get('/checkIfFollow/:id/:idU',usersController.checkIfFollowUser);
 
     //TMDB
     router.get('/getNowPlayingMovies', tmdbController.getNowPlayingMovies);
