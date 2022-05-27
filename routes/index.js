@@ -65,10 +65,12 @@ module.exports = function() {
     //Update user
     router.patch('/users/:id', uploadS3 ,usersController.patch);
 
-    //Follow a user
+    //Follow an user
     router.put('/:id/follow', usersController.followUser);
-    //Unfollow a user
+    //Unfollow an user
     router.put('/:id/unfollow', usersController.unfollowUser);
+    //Check if user follows user
+    router.get('/:id/checkIfFollow',usersController.checkIfFollowUser);
 
     //TMDB
     router.get('/getNowPlayingMovies', tmdbController.getNowPlayingMovies);

@@ -574,3 +574,26 @@ exports.unfollowUser = async (req, res, next) => {
         res.status(403).json({message: "No puedes dejar de seguirte a ti mismo"})
     }
 }
+
+//comprobar si un usuario sigue a otro
+exports.checkIfFollowUser = async (req, res, next) => {
+    if (req.body.userId !== req.params.id) {
+        try {
+            const user = await Users.findById(req.params.id);
+            const currentUser = await Users.findById(req.body.userId);
+            if (user.followers.includes(req.body.userId)) {
+                res.status(200).json({message: "El usuario actual sigue al usuario indicado"});
+            }
+            else {
+                res.status(404).json({message: "El usuario actual NO sigue al usuario indicado"});
+            }
+        } catch (error) {
+            res.status(400).json({
+                message: 'Error al procesar la peticion'
+            });
+        }
+    }
+    else {
+        res.status(403).json({message: "No puedes comprobar si te sigues a ti mismo"})
+    }
+}
