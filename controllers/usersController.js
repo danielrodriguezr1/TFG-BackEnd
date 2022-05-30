@@ -559,7 +559,7 @@ exports.unfollowUser = async (req, res, next) => {
             const currentUser = await Users.findById(req.body.userId);
             if (user.followers.includes(req.body.userId)) {
                 await user.updateOne({$pull:{followers:req.body.userId}});
-                await currentUser.updateOne({$pull:{followings:req.body.userId}});
+                await currentUser.updateOne({$pull:{followings:req.params.id}});
                 res.status(200).json({message: "Se ha dejado de seguir al usuario"});
             } else {
                 res.status(403).json({message: "Tu no sigues a este usuario"});
