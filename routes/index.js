@@ -71,6 +71,8 @@ module.exports = function() {
     router.put('/:id/unfollow', usersController.unfollowUser);
     //Check if user follows user
     router.get('/checkIfFollow/:id/:idU',usersController.checkIfFollowUser);
+    //Get mutually folows by user
+    router.get('/mutuallyFollows/:id',usersController.mutuallyFollows);
 
     //TMDB
     router.get('/getNowPlayingMovies', tmdbController.getNowPlayingMovies);

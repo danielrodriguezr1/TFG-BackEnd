@@ -599,3 +599,19 @@ exports.checkIfFollowUser = async (req, res, next) => {
         res.status(403).json({message: "No puedes comprobar si te sigues a ti mismo"})
     }
 }
+
+//comprobar si dos usuarios se siguen mutuamente
+exports.mutuallyFollows = async (req, res, next) => {
+    try {
+        const user = await Users.findById(req.params.id);
+        const userFollowers = user.followers
+        const userFollowings = user.followings
+        const intersection = userFollowers.filter(element => userFollowings.includes(element));
+        res.status(200).json({mutuallyFollows: intersection});
+        
+    } catch (error) {
+        res.status(400).json({
+            message: 'Error al procesar la peticion'
+        });
+    }
+}
