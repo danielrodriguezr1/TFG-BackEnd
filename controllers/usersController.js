@@ -615,3 +615,39 @@ exports.mutuallyFollows = async (req, res, next) => {
         });
     }
 }
+
+exports.addMovieUserRecommendation = async (req, res, next) => {
+    try {
+        const user = await Users.findById(req.params.id);
+        if (user.movieRecommendations.includes(req.body.idFilm)) {
+            res.status(204).json({message: "Ya le han recomendado esta película o serie al usuario indicado"});
+        }
+        else {
+            await user.updateOne({$push:{movieRecommendations:req.body.idFilm}})
+            await user.updateOne({$push:{movieReccomendationsUsers:req.body.userId}})
+            res.status(200).json({message: "Se ha recomendado la película o serie correctamente"});
+        }
+    } catch (error) {
+        res.status(400).json({
+            message: 'Error al procesar la peticion'
+        });
+    }
+}
+
+exports.addShowUserRecommendation = async (req, res, next) => {
+    try {
+        const user = await Users.findById(req.params.id);
+        if (user.showRecommendations.includes(req.body.idShow)) {
+            res.status(204).json({message: "Ya le han recomendado esta película o serie al usuario indicado"});
+        }
+        else {
+            await user.updateOne({$push:{showRecommendations:req.body.idShow}})
+            await user.updateOne({$push:{showReccomendationsUsers:req.body.userId}})
+            res.status(200).json({message: "Se ha recomendado la película o serie correctamente"});
+        }
+    } catch (error) {
+        res.status(400).json({
+            message: 'Error al procesar la peticion'
+        });
+    }
+}

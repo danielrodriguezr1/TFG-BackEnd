@@ -65,7 +65,27 @@ const usersSchema = new Schema({
 
     watchListShow :[{
         idShow: Number,
-    }]
+    }],
+
+    movieRecommendations :{
+        type: Array,
+        default: []
+    },
+
+    movieReccomendationsUsers :{
+        type: Array,
+        default: []
+    },
+
+    showRecommendations :{
+        type: Array,
+        default: []
+    },
+
+    showReccomendationsUsers :{
+        type: Array,
+        default: []
+    }
 })
 
 usersSchema.method('validPassword', async function(unhashed) {

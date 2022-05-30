@@ -74,6 +74,9 @@ module.exports = function() {
     //Get mutually folows by user
     router.get('/mutuallyFollows/:id',usersController.mutuallyFollows);
 
+
+    
+
     //TMDB
     router.get('/getNowPlayingMovies', tmdbController.getNowPlayingMovies);
     router.get('/getTopRatedMovie', tmdbController.getTopRatedMovie);
@@ -119,7 +122,11 @@ module.exports = function() {
     router.post('/addShowToWatchlist/:id/', usersController.addShowToWatchlist);
     router.patch('/deleteShowWatchlist/:id/:idShow/', usersController.deleteShowWatchlist);
 
-    router.get('/existsInWatchlist/:id/:idFilmOrShow', usersController.existsInWatchlist)
+    router.get('/existsInWatchlist/:id/:idFilmOrShow', usersController.existsInWatchlist);
+
+    //RECOMENDATIONS
+    router.put('/movieRecommendation/:id', usersController.addMovieUserRecommendation);
+    router.put('/showRecommendation/:id', usersController.addShowUserRecommendation);
 
     return router;
 };
