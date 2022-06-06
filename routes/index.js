@@ -43,7 +43,8 @@ module.exports = function() {
     //Eliminar usuario
     router.delete('/users/:id', usersController.delete);
 
-
+    //Eliminar watchlist y recomendaciones
+    router.patch('/eliminar/:id', usersController.deleteFields)
 
     //checkEmail
     router.get('/checkEmail/:email',usersController.checkEmail);
@@ -112,7 +113,10 @@ module.exports = function() {
 
     router.get('/getRecommendations/:id/:type/', ratingsController.getRecommendations);
 
+    //prueba a eliminar
+    router.delete('/deleteRatingUser/:id/', ratingsController.deleteRatingUser);
 
+    
     //WATHCLIST
     router.get('/getWatchlistFilm/:id/', usersController.getWatchlistFilmByUser);
     router.post('/addFilmToWatchlist/:id/', usersController.addFilmToWatchlist);

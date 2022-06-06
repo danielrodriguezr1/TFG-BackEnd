@@ -146,6 +146,30 @@ exports.delete = async (req, res, next) => {
     }
 }
 
+//eliminar algunso campos
+
+exports.deleteFields = async (req, res, next) => {
+    try {
+        let user_id = req.params.id
+        const user = await Users.findOne({_id: user_id});
+        let update = {
+            "watchListFilm": [],
+            "watchListShow": [],
+            "movieRecommendations": [],
+            "movieReccomendationsUsers": [],
+            "showRecommendations": [],
+            "showReccomendationsUsers": []
+        }
+        Users.findByIdAndUpdate(user_id,update).then(user => {
+            res.status(201).json({message: 'Informacion modificada!'});
+        })
+    } catch (error) {
+        res.status(400).json({
+            message: 'Error al procesar la peticion'
+        });
+    }
+}
+
 
 
 //login

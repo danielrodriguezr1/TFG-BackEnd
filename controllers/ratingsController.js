@@ -44,6 +44,22 @@ exports.getRatingsByUser = async (req, res, next) => {
     }
 };
 
+
+//eliminar
+exports.deleteRatingUser = async (req, res, next) => {
+    try {
+        const ratings = await Rating.deleteMany({user: req.params.id});
+        res.status(200).json({
+            message: 'Eliminado'
+        });        
+    }catch(error) {
+        res.status(400).json({
+            message: 'Error al procesar la peticion'
+        });
+    }
+};
+
+
 exports.getRatingByUser = async (req, res, next) => {
     try {
         const ratings = await Rating.find({user: req.params.id, filmOrShow:req.params.idFilmOrShow});
